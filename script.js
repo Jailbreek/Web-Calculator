@@ -27,7 +27,7 @@ function buttonClick(value) {
         handleNumber(value);
     }
     if (shouldUpdateScreen) {
-        screen.innerText = buffer;
+        updateScreen();
     }
 }
 
@@ -67,38 +67,48 @@ switch (symbol) {
 }
 
 function handleMath(symbol) {
-  if (buffer === '0') {
-    return;
-  }
+    if (buffer === '0') {
+        return;
+    }
 
-  const intBuffer = parseInt(buffer);
+    const intBuffer = parseInt(buffer);
 
-  if (runningTotal === 0) {
-    runningTotal = intBuffer;
-  } else {
-    flushOperation(intBuffer);
-  }
-  previousOperator = symbol;
-  buffer = '0';
+    if (runningTotal === 0) {
+        runningTotal = intBuffer;
+    } else {
+        flushOperation(intBuffer);
+    }
+    previousOperator = symbol;
+    buffer = '0';
 }
 
 function flushOperation(intBuffer) {
-  if (previousOperator === '+') {
-    runningTotal += intBuffer;
-  } else if (previousOperator === '−') {
-    runningTotal -= intBuffer;
-  } else if (previousOperator === '×') {
-    runningTotal *= intBuffer;
-  } else if (previousOperator === '÷') {
-    runningTotal /= intBuffer;
-  }
+    if (previousOperator === '+') {
+        runningTotal += intBuffer;
+    } else if (previousOperator === '−') {
+        runningTotal -= intBuffer;
+    } else if (previousOperator === '×') {
+        runningTotal *= intBuffer;
+    } else if (previousOperator === '÷') {
+        runningTotal /= intBuffer;
+    }
 }
 
 function handleNumber(numberString) {
-  if (buffer === "0") {
-    buffer = numberString;
-  } else {
-    buffer += numberString;
-  }
-  shouldUpdateScreen = true;
+    if (buffer === "0") {
+        buffer = numberString;
+    } else {
+        buffer += numberString;
+    }
+    shouldUpdateScreen = true;
+}
+
+function addCommas(number) {
+    const parts = number.toString().split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join('.');
+}
+
+function updateScreen() {
+    screen.innerText = addCommas(buffer);
 }
